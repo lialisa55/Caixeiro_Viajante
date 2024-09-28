@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "item.h"
 #include "fila.h"
 struct fila_{
@@ -42,4 +44,8 @@ void fila_deletar(FILA *fila){
 ITEM *fila_topo(FILA *fila){
     if (fila -> tamanho == 0) return NULL;
     return fila->fila[fila->tamanho - 1];
+}
+
+bool fila_vazia(FILA *fila){
+    return !fila->tamanho;
 }
