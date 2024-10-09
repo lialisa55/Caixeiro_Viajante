@@ -33,7 +33,6 @@ int lista_get_item(LISTA *lista, int indice){
 
 void lista_pushback(LISTA *lista, int valor){
     if (lista_tamanho(lista) == lista->capacidade){
-        //printf("cu");
         lista->lista = realloc(lista->lista, lista->capacidade * 2 * sizeof(int));
         int tamanho = lista_tamanho(lista);
         lista->start = lista->lista;
