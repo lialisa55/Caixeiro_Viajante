@@ -1,12 +1,11 @@
-all: fila.o item.o main.o
-	gcc fila.o item.o coisa.o -o programa
-run: programa
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99 -fsanitize=address
+OBJS = da_good_shit.c lista.c
+DEPS = lista.h 
+
+all: $(DEPS)
+	$(CC) $(CFLAGS) $(OBJS) -o asw
+run:
 	./programa
-fila.o: fila.c
-	gcc fila.c -c
-item.o: item.c
-	gcc item.c -c
-main.o:
-	gcc coisa.c -c 
 clean:
-	rm *.o
+	rm *.o programa
