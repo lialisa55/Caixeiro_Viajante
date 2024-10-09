@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -fsanitize=address
-OBJS = da_good_shit.c lista.c
-DEPS = lista.h 
+OBJS = da_good_shit.c lista.c matriz.c
+DEPS = lista.h matriz.h
 
 all: $(DEPS)
 	$(CC) $(CFLAGS) $(OBJS) -o asw
