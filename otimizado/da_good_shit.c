@@ -83,7 +83,7 @@ int get_best(MATRIZ *memo, MATRIZ *adj, int n, int s){
     return best;
 }
 
-LISTA *get_some_bitches(MATRIZ *memo, MATRIZ *adj, int n, int s){
+LISTA *achar_caminho(MATRIZ *memo, MATRIZ *adj, int n, int s){
     LISTA *caminho = lista_criar(n+1);
     int estado = (1<<n )-1;
     int indice_anterior = s;
@@ -114,10 +114,9 @@ int main(){
     setup(memo, adj, n, comeco, k);
     solve(memo, adj, comeco, n);
     int best_dist = get_best(memo, adj, n, comeco);
-    LISTA *path = get_some_bitches(memo, adj, n, comeco);
-    printf("distancia: %d\n", best_dist);
+    LISTA *path = achar_caminho(memo, adj, n, comeco);
     for (int i = 0; i < lista_tamanho(path); i++) printf("%d ", lista_get_item(path,i) + 1);
-    printf("\n");
+    printf("%d", best_dist);
     lista_apagar(path);
     matriz_deletar(&memo);
     matriz_deletar(&adj);
