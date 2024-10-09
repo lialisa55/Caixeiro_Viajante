@@ -18,20 +18,20 @@ struct CIDADE_{
 };
 typedef struct CIDADE_ CIDADE;
 
-int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
+int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int num_visitadas, int num_cidades, int *best){
     visitados[atual] = true;
     for (int i = 0; i < cidades[atual].qtd_conexoes; i++){
         int prev = *best;
-        if (cidades[atual].conexoes[i].no->indice == destino && count == ncidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
-            path[count+1] = destino;
+        if (cidades[atual].conexoes[i].no->indice == destino && num_visitadas == num_cidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
+            path[num_visitadas+1] = destino;
             *best = dist + cidades[atual].conexoes[i].dist;
             break;
         }
         if (!visitados[cidades[atual].conexoes[i].no->indice]){
-            encontrar_menor_caminho(cidades, visitados, path, cidades[atual].conexoes[i].no->indice, destino, dist + cidades[atual].conexoes[i].dist, count + 1, ncidades, best);
+            encontrar_menor_caminho(cidades, visitados, path, cidades[atual].conexoes[i].no->indice, destino, dist + cidades[atual].conexoes[i].dist, num_visitadas + 1, num_cidades, best);
         }
         if (*best < prev){
-            path[count+1] = cidades[atual].conexoes[i].no->indice;
+            path[num_visitadas+1] = cidades[atual].conexoes[i].no->indice;
         }
     }
     visitados[atual] = false;
@@ -39,13 +39,13 @@ int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12],
 }
 
 int main(void){
-    int ncidades, comeco, nconexoes;
-    scanf("%d %d %d", &ncidades, &comeco, &nconexoes);
+    int num_cidades, comeco, num_conexoes;
+    scanf("%d %d %d", &num_cidades, &comeco, &num_conexoes);
     comeco--;
-    CIDADE *cidades = calloc(ncidades, sizeof(CIDADE));
-    for (int i = 0; i < ncidades; i++) cidades[i].indice = i;
+    CIDADE *cidades = calloc(num_cidades, sizeof(CIDADE));
+    for (int i = 0; i < num_cidades; i++) cidades[i].indice = i;
     int a, b, dist;
-    while (nconexoes--){
+    while (num_conexoes--){
         scanf("%d %d %d", &a, &b, &dist);
         a--; b--;
         CONEXAO x = {dist, &cidades[b]}, y = {dist, &cidades[a]};
@@ -57,8 +57,8 @@ int main(void){
     int visitados[12] = {0};
     int path[13] = {comeco, -1, -1, -1, -1, -1, -1, -1, -1};
     int best = 1000000;
-    printf("%d ", encontrar_menor_caminho(cidades, visitados, path,  comeco, comeco, 0, 0, ncidades, &best));
-    for (int i = 0; i <= ncidades; i++){
+    printf("%d ", encontrar_menor_caminho(cidades, visitados, path,  comeco, comeco, 0, 0, num_cidades, &best));
+    for (int i = 0; i <= num_cidades; i++){
         printf("%d ", path[i]+1);
     }
     return 0;
