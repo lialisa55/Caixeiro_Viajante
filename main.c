@@ -14,14 +14,14 @@ typedef struct conexao_ CONEXAO;
 struct CIDADE_{
     CONEXAO conexoes[12];
     int indice;
-    int tamanho;  
+    int qtd_conexoes;  
 };
 typedef struct CIDADE_ CIDADE;
 
 int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int cnt, int ncidades, int *best){
     visitados[atual] = true;
     printf("%d %d\n", atual+1, cnt);
-    for (int i = 0; i < cidades[atual].tamanho; i++){
+    for (int i = 0; i < cidades[atual].qtd_conexoes; i++){
         int prev = *best;
         if (cidades[atual].conexoes[i].no->indice == destino && cnt == ncidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
             path[cnt+1] = destino;
@@ -48,10 +48,10 @@ int main(void){
         scanf("%d %d %d", &a, &b, &dist);
         a--; b--;
         CONEXAO x = {dist, &cidades[b]}, y = {dist, &cidades[a]};
-        cidades[a].conexoes[cidades[a].tamanho] = x;
-        cidades[a].tamanho++;
-        cidades[b].conexoes[cidades[b].tamanho] = y;
-        cidades[b].tamanho++;
+        cidades[a].conexoes[cidades[a].qtd_conexoes] = x;
+        cidades[a].qtd_conexoes++;
+        cidades[b].conexoes[cidades[b].qtd_conexoes] = y;
+        cidades[b].qtd_conexoes++;
     }
     int visitados[12] = {0};
     int path[13] = {comeco, -1, -1, -1, -1, -1, -1, -1, -1};
