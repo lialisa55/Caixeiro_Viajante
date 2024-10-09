@@ -18,19 +18,20 @@ struct CIDADE_{
 };
 typedef struct CIDADE_ CIDADE;
 
-int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int cnt, int ncidades, int *best){
+int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
     visitados[atual] = true;
-    printf("%d %d\n", atual+1, cnt);
     for (int i = 0; i < cidades[atual].qtd_conexoes; i++){
         int prev = *best;
-        if (cidades[atual].conexoes[i].no->indice == destino && cnt == ncidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
-            path[cnt+1] = destino;
+        if (cidades[atual].conexoes[i].no->indice == destino && count == ncidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
+            path[count+1] = destino;
             *best = dist + cidades[atual].conexoes[i].dist;
             break;
         }
-        if (!visitados[cidades[atual].conexoes[i].no->indice]) encontrar_menor_caminho(cidades, visitados, path, cidades[atual].conexoes[i].no->indice, destino, dist + cidades[atual].conexoes[i].dist, cnt + 1, ncidades, best);
+        if (!visitados[cidades[atual].conexoes[i].no->indice]){
+            encontrar_menor_caminho(cidades, visitados, path, cidades[atual].conexoes[i].no->indice, destino, dist + cidades[atual].conexoes[i].dist, count + 1, ncidades, best);
+        }
         if (*best < prev){
-            path[cnt+1] = cidades[atual].conexoes[i].no->indice;
+            path[count+1] = cidades[atual].conexoes[i].no->indice;
         }
     }
     visitados[atual] = false;
