@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include "item.h"
 #include "fila.h"
+#include "list.h"
+#include "garfo.h"
 #define min(a,b) (a<b ? a:b)
 struct conexao_{
     int dist;
@@ -18,20 +20,26 @@ struct CIDADE_{
 };
 typedef struct CIDADE_ CIDADE;
 
-int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
+//int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
+int encontrar_menor_caminho(GARFO *garfo, int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
+    int numconx = garfo_num_conexoes(garfo, atual);
+    int destconx = 0;
+    int tamconx = 0;
     visitados[atual] = true;
-    for (int i = 0; i < cidades[atual].qtd_conexoes; i++){
+    for (int i = 0; i < numconx; i++){
+        destconx = garfo_destino_conexao(garfo, atual, i);
+        tamconx = garfo_tamanho_conexao(garfo, atual, i);
         int prev = *best;
-        if (cidades[atual].conexoes[i].no->indice == destino && count == ncidades-1 && dist + cidades[atual].conexoes[i].dist < *best){
+        if (destconx == destino && count == ncidades - 1 && dist + tamconx < *best){
             path[count+1] = destino;
-            *best = dist + cidades[atual].conexoes[i].dist;
+            *best = dist + tamconx;
             break;
         }
-        if (!visitados[cidades[atual].conexoes[i].no->indice]){
-            encontrar_menor_caminho(cidades, visitados, path, cidades[atual].conexoes[i].no->indice, destino, dist + cidades[atual].conexoes[i].dist, count + 1, ncidades, best);
+        if (!visitados[destconx]){
+            encontrar_menor_caminho(garfo, visitados, path, destconx, destino, dist + tamconx, count + 1, ncidades, best);
         }
         if (*best < prev){
-            path[count+1] = cidades[atual].conexoes[i].no->indice;
+            path[count+1] = destconx;
         }
     }
     visitados[atual] = false;
@@ -42,17 +50,16 @@ int main(void){
     int ncidades, comeco, nconexoes;
     scanf("%d %d %d", &ncidades, &comeco, &nconexoes);
     comeco--;
-    CIDADE *cidades = calloc(ncidades, sizeof(CIDADE));
-    for (int i = 0; i < ncidades; i++) cidades[i].indice = i;
+    GARFO *lista_cidades = garfo_criar();
+    for (int i = 0; i < ncidades; i++){
+        garfo_inserir_cidade(lista_cidades, i);
+    }
     int a, b, dist;
     while (nconexoes--){
         scanf("%d %d %d", &a, &b, &dist);
         a--; b--;
-        CONEXAO x = {dist, &cidades[b]}, y = {dist, &cidades[a]};
-        cidades[a].conexoes[cidades[a].qtd_conexoes] = x;
-        cidades[a].qtd_conexoes++;
-        cidades[b].conexoes[cidades[b].qtd_conexoes] = y;
-        cidades[b].qtd_conexoes++;
+        garfo_inserir_conexao(garfo, a, b, dist);
+        garfo_inserir_conexao(garfo, b, a, dist);
     }
     int visitados[12] = {0};
     int path[13] = {comeco, -1, -1, -1, -1, -1, -1, -1, -1};
