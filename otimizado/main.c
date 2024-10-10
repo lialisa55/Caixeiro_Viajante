@@ -83,27 +83,32 @@ int encontrar_menor_custo(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num
 }
 
 LISTA *reconstruir_melhor_rota(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
-    LISTA *caminho = lista_criar(num_cidades+1);
-    int estado = (1<<num_cidades )-1;
-    int cidade_atual = comeco;
-    for (int i =  num_cidades - 1; i >= 1; i--){
+    LISTA *caminho = lista_criar(num_cidades + 1);
+    int estado = (1 << num_cidades) - 1;
+    int cidade_anterior = comeco; 
+
+    for (int i = num_cidades - 1; i >= 1; i--) {
         int melhor_cidade = -1;
-        for (int cidade_atual =  0; cidade_atual < num_cidades; cidade_atual++){
-            if (cidade_atual == comeco || not_in(estado, cidade_atual)) continue;
-            if (melhor_cidade == -1){
-                melhor_cidade = cidade_atual;
+        for (int cidade_candidata = 0; cidade_candidata < num_cidades; cidade_candidata++) {
+            if (cidade_candidata == comeco || not_in(estado, cidade_candidata)) continue;
+            
+            if (melhor_cidade == -1) {
+                melhor_cidade = cidade_candidata;
             }
-            int distancia_previa = distancias_get(memorizacao, melhor_cidade, estado) + distancias_get(ligacoes, cidade_atual, melhor_cidade);
-            int distancia_atual = distancias_get(memorizacao, cidade_atual, estado) + distancias_get(ligacoes, cidade_atual, cidade_atual);
-            if (distancia_atual < distancia_previa){
-                melhor_cidade = cidade_atual; 
+            
+            int distancia_previa = distancias_get(memorizacao, melhor_cidade, estado) + distancias_get(ligacoes, cidade_anterior, melhor_cidade);
+            int distancia_atual = distancias_get(memorizacao, cidade_candidata, estado) + distancias_get(ligacoes, cidade_anterior, cidade_candidata);
+            
+            if (distancia_atual < distancia_previa) {
+                melhor_cidade = cidade_candidata; 
             }
         }
-        cidade_atual = melhor_cidade;
+        cidade_anterior = melhor_cidade;
         lista_set(caminho, i, melhor_cidade);
-        estado = estado ^ 1 << melhor_cidade;
+        estado = estado ^ 1 << melhor_cidade; 
     }
-    lista_set(caminho, 0, comeco);
+
+    lista_set(caminho, 0, comeco); 
     lista_set(caminho, num_cidades, comeco);
     return caminho;
 }
