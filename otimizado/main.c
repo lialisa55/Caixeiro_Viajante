@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "lista.h"
-#include "lista2D.h"
+#include "Distancias.h"
 #define MAX (int)1e9
 
 int min(int a, int b){
@@ -32,27 +32,27 @@ LISTA* combinacoes(int k, int n){
     return set;
 }
 
-void setup(MATRIZ *memo, MATRIZ *adj, int n, int s, int k){
+void setup(DISTANCIAS *memo, DISTANCIAS *adj, int n, int s, int k){
     for (int i = 0; i < n; i++){
         for (int j = 0; j < n; j++){
-            if (i != j) matriz_set(adj, i, j, MAX);
-            else matriz_set(adj, i, j, 0);
+            if (i != j) distancias_set(adj, i, j, MAX);
+            else distancias_set(adj, i, j, 0);
         }
     }
     while (k--){
         int a, b, dist;
         scanf("%d %d %d", &a, &b, &dist);
         a--; b--;
-        matriz_set(adj, a, b, dist);
-        matriz_set(adj, b, a, dist);
+        distancias_set(adj, a, b, dist);
+        distancias_set(adj, b, a, dist);
     }
     for (int i = 0; i < n; i++){
         if (s == i) continue;
-        matriz_set(memo, i, 1 << s | 1 << i, matriz_get(adj, s, i));
+        distancias_set(memo, i, 1 << s | 1 << i, distancias_get(adj, s, i));
     }
 }
 
-void solve(MATRIZ *memo, MATRIZ *adj, int s, int n){
+void solve(DISTANCIAS *memo, DISTANCIAS *adj, int s, int n){
     for (int k = 3; k <= n; k++){
         LISTA *combinations = combinacoes(k, n);
         for (int i = 0; i < lista_tamanho(combinations); i++){
@@ -64,26 +64,26 @@ void solve(MATRIZ *memo, MATRIZ *adj, int s, int n){
                 int melhor_dist = MAX;
                 for (int fim = 0; fim < n; fim++){
                     if (fim == s || not_in(quebra, fim)) continue;
-                    int dist = matriz_get(memo, fim, quebra) + matriz_get(adj, fim, proximo);
+                    int dist = distancias_get(memo, fim, quebra) + distancias_get(adj, fim, proximo);
                     melhor_dist = min(melhor_dist, dist);
                 }
-                matriz_set(memo, proximo, combinacao, melhor_dist);
+                distancias_set(memo, proximo, combinacao, melhor_dist);
             }
         }
         lista_apagar(combinations);
     }
 }
 
-int get_best(MATRIZ *memo, MATRIZ *adj, int n, int s){
+int get_best(DISTANCIAS *memo, DISTANCIAS *adj, int n, int s){
     int best = MAX;
     for (int i = 0; i < n; i++){
         if (i == s) continue;
-        best = min(best, matriz_get(memo, i, (1<<n )-1) + matriz_get(adj, i, s));
+        best = min(best, distancias_get(memo, i, (1<<n )-1) + distancias_get(adj, i, s));
     }
     return best;
 }
 
-LISTA *achar_caminho(MATRIZ *memo, MATRIZ *adj, int n, int s){
+LISTA *achar_caminho(DISTANCIAS *memo, DISTANCIAS *adj, int n, int s){
     LISTA *caminho = lista_criar(n+1);
     int estado = (1<<n )-1;
     int indice_anterior = s;
@@ -92,8 +92,8 @@ LISTA *achar_caminho(MATRIZ *memo, MATRIZ *adj, int n, int s){
         for (int j =  0; j < n; j++){
             if (j == s || not_in(estado, j)) continue;
             if (indice == -1) indice = j;
-            int distancia_previa = matriz_get(memo, indice, estado) + matriz_get(adj, indice_anterior, indice);
-            int distancia_atual = matriz_get(memo, j, estado) + matriz_get(adj, indice_anterior, j);
+            int distancia_previa = distancias_get(memo, indice, estado) + distancias_get(adj, indice_anterior, indice);
+            int distancia_atual = distancias_get(memo, j, estado) + distancias_get(adj, indice_anterior, j);
             if (distancia_atual < distancia_previa) indice = j;   
         }
         indice_anterior = indice;
@@ -109,8 +109,8 @@ int main(){
     int n, comeco, k;
     scanf("%d %d %d", &n, &comeco, &k);
     comeco--;
-    MATRIZ *memo = matriz_criar(n, 1<<n);
-    MATRIZ *adj = matriz_criar(n, n);
+    DISTANCIAS *memo = distancias_criar(n, 1<<n);
+    DISTANCIAS *adj = distancias_criar(n, n);
     setup(memo, adj, n, comeco, k);
     solve(memo, adj, comeco, n);
     int best_dist = get_best(memo, adj, n, comeco);
@@ -118,6 +118,6 @@ int main(){
     for (int i = 0; i < lista_tamanho(path); i++) printf("%d ", lista_get_item(path,i) + 1);
     printf("%d", best_dist);
     lista_apagar(path);
-    matriz_deletar(&memo);
-    matriz_deletar(&adj);
+    distancias_deletar(&memo);
+    distancias_deletar(&adj);
 }
