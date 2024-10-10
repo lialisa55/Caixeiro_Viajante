@@ -38,10 +38,10 @@ int main(){
     int visitados[12] = {0};
     int path[13] = {comeco, -1, -1, -1, -1, -1, -1, -1, -1};
     int best = 1000000;
-    printf("%d ", my_recursion(garfo, visitados, path,  comeco, comeco, 0, 0, n, &best));
+    best = my_recursion(garfo, visitados, path,  comeco, comeco, 0, 0, n, &best);
     for (int i = 0; i <= n; i++){
         printf("%d ", path[i]+1);
     }
-    printf("\n");
+    printf("%d\n", best);
     garfo_apagar(&garfo);
 }
