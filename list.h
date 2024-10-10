@@ -1,15 +1,22 @@
-typedef struct lista_ LISTA;
+#ifndef LIST_H
+    #define LIST_H
+    #include <stdlib.h>
+    #include <stdbool.h>
+    #include <stdio.h>
 
-typedef struct conexao_ CONEXAO;
+    typedef struct lista_ LISTA;
 
-LISTA *lista_criar();
+    typedef struct conexao_ CONEXAO;
 
-void lista_apagar(LISTA *lista);
+    LISTA *lista_criar();
 
-void lista_remover(LISTA *lista, int indice);
+    void lista_apagar(LISTA *lista);
 
-void lista_inserir(LISTA *lista, int destino, int tamanho);
+    void lista_remover(LISTA *lista, int indice);
 
-int lista_destino(LISTA *lista, int indice);
+    void lista_inserir(LISTA *lista, int destino, int tamanho);
 
-int lista_conexao_tamanho(LISTA *lista, int indice)
+    int lista_destino(LISTA *lista, int indice);
+
+    int lista_conexao_tamanho(LISTA *lista, int indice);
+#endif

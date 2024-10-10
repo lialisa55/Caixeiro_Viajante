@@ -1,24 +1,9 @@
 #include <stdio.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "item.h"
-#include "fila.h"
 #include "list.h"
 #include "garfo.h"
 #define min(a,b) (a<b ? a:b)
-struct conexao_{
-    int dist;
-    struct CIDADE_ *no;
-};
-typedef struct conexao_ CONEXAO;
-
-struct CIDADE_{
-    CONEXAO conexoes[12];
-    int indice;
-    int qtd_conexoes;  
-};
-typedef struct CIDADE_ CIDADE;
 
 //int encontrar_menor_caminho(CIDADE cidades[12], int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
 int encontrar_menor_caminho(GARFO *garfo, int visitados[12], int path[12], int atual, int destino, int dist, int count, int ncidades, int *best){
@@ -58,13 +43,13 @@ int main(void){
     while (nconexoes--){
         scanf("%d %d %d", &a, &b, &dist);
         a--; b--;
-        garfo_inserir_conexao(garfo, a, b, dist);
-        garfo_inserir_conexao(garfo, b, a, dist);
+        garfo_inserir_conexao(lista_cidades, a, b, dist);
+        garfo_inserir_conexao(lista_cidades, b, a, dist);
     }
     int visitados[12] = {0};
     int path[13] = {comeco, -1, -1, -1, -1, -1, -1, -1, -1};
     int best = 1000000;
-    printf("%d ", encontrar_menor_caminho(cidades, visitados, path,  comeco, comeco, 0, 0, ncidades, &best));
+    printf("%d ", encontrar_menor_caminho(lista_cidades, visitados, path,  comeco, comeco, 0, 0, ncidades, &best));
     for (int i = 0; i <= ncidades; i++){
         printf("%d ", path[i]+1);
     }

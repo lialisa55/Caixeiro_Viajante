@@ -1,4 +1,5 @@
 #include "list.h"
+#include "list.c"
 #include "garfo.h"
 #include <stdbool.h>
 #include <stdlib.h>
@@ -10,7 +11,7 @@ struct cidade_ {
 };
 
 struct garfo_ {
-    CIDADE *cidades;
+    CIDADE **cidades;
     int inicio;
     int fim;
 };
@@ -76,7 +77,7 @@ void garfo_inserir_conexao(GARFO *garfo, int indice, int destino, int tamanho){
 //}
 
 int garfo_tamanho_conexao(GARFO* garfo, int indice_cidade, int indice_conexao){
-    return(garfo->cidades[indice_cidade]->lista->conexoes[indice_conexao]->tamanho)
+    return(garfo->cidades[indice_cidade]->lista->conexoes[indice_conexao]->tamanho);
 }
 int garfo_num_conexoes(GARFO *garfo, int indice_cidade){
     return(garfo->cidades[indice_cidade]->lista->num_conexoes);

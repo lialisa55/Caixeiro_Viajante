@@ -1,20 +1,29 @@
-typedef struct garfo_ GARFO;
+#ifndef GARFO_H
+    #define GARFO_H
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <stdbool.h>
+    #include "list.h"
 
-GARFO *garfo_criar();
+    typedef struct garfo_ GARFO;
 
-void garfo_apagar(GARFO *garfo);
+    typedef struct cidade_ CIDADE;
 
-void garfo_inserir_cidade(GARFO *garfo, int indice);
+    GARFO *garfo_criar();
 
-void garfo_remover_cidade(GARFO *garfo, int indice);
+    void garfo_apagar(GARFO *garfo);
 
-void garfo_inserir_conexao(GARFO *garfo, int indice, int destino, int tamanho);
+    void garfo_inserir_cidade(GARFO *garfo, int indice);
 
-int garfo_tamanho_conexao(GARFO* garfo, int indice_cidade, int indice_conexao);
+    void garfo_remover_cidade(GARFO *garfo, int indice);
 
-int garfo_num_conexoes(GARFO *garfo, int indice_cidade);
+    void garfo_inserir_conexao(GARFO *garfo, int indice, int destino, int tamanho);
 
-int garfo_destino_conexao(GARFO *garfo, int indice_cidade, int indice_conexao);
+    int garfo_tamanho_conexao(GARFO* garfo, int indice_cidade, int indice_conexao);
 
-int garfo_indice_cidade(GARFO *garfo, int indice_cidade);
+    int garfo_num_conexoes(GARFO *garfo, int indice_cidade);
 
+    int garfo_destino_conexao(GARFO *garfo, int indice_cidade, int indice_conexao);
+
+    int garfo_indice_cidade(GARFO *garfo, int indice_cidade);
+#endif

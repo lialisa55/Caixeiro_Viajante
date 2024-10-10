@@ -9,7 +9,7 @@ struct conexao_ {
 };
 
 struct lista_ {
-    CONEXAO *conexoes;
+    CONEXAO **conexoes;
     int num_conexoes;
     int fim;
 };
@@ -25,16 +25,16 @@ LISTA *lista_criar(){
 void lista_apagar(LISTA *lista){
     if(lista->conexoes != NULL){
         lista->fim --;
-        for(i = garfo->fim; i > 0; i--){
-            lista->conexoes[i] = NULL;
+        for(int i = lista->fim; i > 0; i--){
             free(lista->conexoes[i]);
+            lista->conexoes[i] = NULL;
         }
     }
     free(lista);
     return;
 }
 
-void lista_remover(LISTA *lista, int destino){
+void lista_remover(LISTA *lista, int indice){
     lista->fim --;
     lista->conexoes[indice] = NULL;
     free(lista->conexoes[indice]);
@@ -60,5 +60,6 @@ int lista_conexao_tamanho(LISTA *lista, int destino){
             return(lista->conexoes[i]->tamanho);
         }
     }
+    return(0);
 }
 
