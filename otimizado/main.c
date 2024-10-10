@@ -31,7 +31,7 @@ LISTA* combinacoes(int num_conexoes, int num_cidades){
     return set;
 }
 
-void setup(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco, int num_conexoes){
+void inicializar_distancias(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco, int num_conexoes){
     for (int i = 0; i < num_cidades; i++){
         for (int j = 0; j < num_cidades; j++){
             if (i != j) distancias_set(ligacoes, i, j, MAX);
@@ -51,7 +51,7 @@ void setup(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int c
     }
 }
 
-void solve(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int comeco, int num_cidades){
+void calcular_distancias_minimas(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int comeco, int num_cidades){
     for (int num_conexoes = 3; num_conexoes <= num_cidades; num_conexoes++){
         LISTA *combinations = combinacoes(num_conexoes, num_cidades);
         for (int i = 0; i < lista_tamanho(combinations); i++){
@@ -73,7 +73,7 @@ void solve(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int comeco, int num_ci
     }
 }
 
-int get_best(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
+int encontrar_menor_custo(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
     int best = MAX;
     for (int i = 0; i < num_cidades; i++){
         if (i == comeco) continue;
@@ -82,22 +82,26 @@ int get_best(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int
     return best;
 }
 
-LISTA *achar_caminho(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
+LISTA *reconstruir_melhor_rota(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
     LISTA *caminho = lista_criar(num_cidades+1);
     int estado = (1<<num_cidades )-1;
-    int indice_anterior = comeco;
+    int cidade_atual = comeco;
     for (int i =  num_cidades - 1; i >= 1; i--){
-        int indice = -1;
-        for (int j =  0; j < num_cidades; j++){
-            if (j == comeco || not_in(estado, j)) continue;
-            if (indice == -1) indice = j;
-            int distancia_previa = distancias_get(memorizacao, indice, estado) + distancias_get(ligacoes, indice_anterior, indice);
-            int distancia_atual = distancias_get(memorizacao, j, estado) + distancias_get(ligacoes, indice_anterior, j);
-            if (distancia_atual < distancia_previa) indice = j;   
+        int melhor_cidade = -1;
+        for (int cidade_atual =  0; cidade_atual < num_cidades; cidade_atual++){
+            if (cidade_atual == comeco || not_in(estado, cidade_atual)) continue;
+            if (melhor_cidade == -1){
+                melhor_cidade = cidade_atual;
+            }
+            int distancia_previa = distancias_get(memorizacao, melhor_cidade, estado) + distancias_get(ligacoes, cidade_atual, melhor_cidade);
+            int distancia_atual = distancias_get(memorizacao, cidade_atual, estado) + distancias_get(ligacoes, cidade_atual, cidade_atual);
+            if (distancia_atual < distancia_previa){
+                melhor_cidade = cidade_atual; 
+            }
         }
-        indice_anterior = indice;
-        lista_set(caminho, i, indice);
-        estado = estado ^ 1 << indice;
+        cidade_atual = melhor_cidade;
+        lista_set(caminho, i, melhor_cidade);
+        estado = estado ^ 1 << melhor_cidade;
     }
     lista_set(caminho, 0, comeco);
     lista_set(caminho, num_cidades, comeco);
@@ -110,13 +114,15 @@ int main(void){
     comeco--;
     DISTANCIAS *memorizacao = distancias_criar(num_cidades, 1<<num_cidades);
     DISTANCIAS *ligacoes = distancias_criar(num_cidades, num_cidades);
-    setup(memorizacao, ligacoes, num_cidades, comeco, num_conexoes);
-    solve(memorizacao, ligacoes, comeco, num_cidades);
-    int best_dist = get_best(memorizacao, ligacoes, num_cidades, comeco);
-    LISTA *path = achar_caminho(memorizacao, ligacoes, num_cidades, comeco);
-    for (int i = 0; i < lista_tamanho(path); i++) printf("%d ", lista_get_item(path,i) + 1);
-    printf("%d", best_dist);
-    lista_apagar(path);
+    inicializar_distancias(memorizacao, ligacoes, num_cidades, comeco, num_conexoes);
+    calcular_distancias_minimas(memorizacao, ligacoes, comeco, num_cidades);
+    int menor_distancia = encontrar_menor_custo(memorizacao, ligacoes, num_cidades, comeco);
+    LISTA *menor_rota = reconstruir_melhor_rota(memorizacao, ligacoes, num_cidades, comeco);
+    for (int i = 0; i < lista_tamanho(menor_rota); i++){
+        printf("%d ", lista_get_item(menor_rota,i) + 1);
+    }
+    printf("%d", menor_distancia);
+    lista_apagar(menor_rota);
     distancias_deletar(&memorizacao);
     distancias_deletar(&ligacoes);
 }
