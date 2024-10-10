@@ -27,7 +27,7 @@ void garfo_apagar(GARFO *garfo){
     if(garfo->cidades != NULL){
         for(int i = garfo->fim - 1; i > 0; i--){
             lista_apagar(garfo->cidades[i]->lista);
-            garfo->cidadeds[i]->lista = NULL;
+            garfo->cidades[i]->lista = NULL;
             free(garfo->cidades[i]);
         }
     free(garfo);

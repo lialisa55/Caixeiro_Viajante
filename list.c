@@ -56,7 +56,7 @@ void lista_inserir(LISTA *lista, int destino, int tamanho){
 
 int lista_conexao_tamanho(LISTA *lista, int destino){
     for(int i = 0; i < lista->fim; i++){
-        if(indice == lista->conexoes[i]->destino){
+        if(destino == lista->conexoes[i]->destino){
             return(lista->conexoes[i]->tamanho);
         }
     }
