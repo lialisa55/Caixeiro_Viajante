@@ -12,12 +12,12 @@ bool not_in(int state, int i){
     return !(state & 1 << i);
 }
 
-void combinacoes_helper(LISTA *set, int num_conexoes, int at, int num_cidades, int state){
+void combinacoes_helper(LISTA *set, int num_conexoes, int cidade_inicial, int num_cidades, int state){
     if (num_conexoes == 0){
         lista_pushback(set, state);
     }
     else{
-        for (int i = at; i < num_cidades; i++){
+        for (int i = cidade_inicial; i < num_cidades; i++){
             state = state | 1 << i;
             combinacoes_helper(set, num_conexoes - 1, i + 1, num_cidades, state);
             state = state & ~(1 << i);
@@ -75,9 +75,9 @@ void calcular_distancias_minimas(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, 
 
 int encontrar_menor_custo(DISTANCIAS *memorizacao, DISTANCIAS *ligacoes, int num_cidades, int comeco){
     int best = MAX;
-    for (int i = 0; i < num_cidades; i++){
-        if (i == comeco) continue;
-        best = min(best, distancias_get(memorizacao, i, (1<<num_cidades )-1) + distancias_get(ligacoes, i, comeco));
+    for (int atual = 0; atual < num_cidades; atual++){
+        if (atual == comeco) continue;
+        best = min(best, distancias_get(memorizacao, atual, (1<<num_cidades )-1) + distancias_get(ligacoes, atual, comeco));
     }
     return best;
 }
